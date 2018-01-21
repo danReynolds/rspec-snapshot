@@ -13,7 +13,7 @@ module RSpec
           @actual = actual
           filename = "#{@snapshot_name}.snap"
           snap_path = File.join(snapshot_dir, filename)
-          update_snapshots = RSpec.configuration.update_snapshots
+          update_snapshots = ENV['UPDATE']
           FileUtils.mkdir_p(File.dirname(snap_path)) unless Dir.exist?(File.dirname(snap_path))
           if File.exist?(snap_path) && !update_snapshots
             file = File.new(snap_path)
