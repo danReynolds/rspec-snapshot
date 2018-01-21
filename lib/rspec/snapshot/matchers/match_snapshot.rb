@@ -13,14 +13,16 @@ module RSpec
           @actual = actual
           filename = "#{@snapshot_name}.snap"
           snap_path = File.join(snapshot_dir, filename)
+          update_snapshots = Rspec.configuration.update_snapshots
           FileUtils.mkdir_p(File.dirname(snap_path)) unless Dir.exist?(File.dirname(snap_path))
-          if File.exist?(snap_path)
+          if File.exist?(snap_path) && !update_snapshots
             file = File.new(snap_path)
             @expect = file.read
             file.close
             @actual.to_s == @expect
           else
-            RSpec.configuration.reporter.message "Generate #{snap_path}"
+            reporter_message = update_snapshots ? 'Updating' : 'Generating'
+            RSpec.configuration.reporter.message "#{reporter_message} #{snap_path}"
             file = File.new(snap_path, "w+")
             file.write(@actual)
             file.close
